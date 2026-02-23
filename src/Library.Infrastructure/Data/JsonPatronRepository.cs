@@ -16,6 +16,11 @@ public class JsonPatronRepository : IPatronRepository
     {
         await _jsonData.EnsureDataLoaded();
 
+        if (_jsonData.Patrons == null)
+        {
+            return new List<Patron>();
+        }
+
         List<Patron> searchResults = new List<Patron>();
         foreach (Patron patron in _jsonData.Patrons)
         {
@@ -49,8 +54,13 @@ public class JsonPatronRepository : IPatronRepository
     public async Task UpdatePatron(Patron patron)
     {
         await _jsonData.EnsureDataLoaded();
-        var patrons = _jsonData.Patrons!;
-        Patron existingPatron = null;
+        var patrons = _jsonData.Patrons;
+        if (patrons == null)
+        {
+            return;
+        }
+
+        Patron? existingPatron = null;
         foreach (var p in patrons)
         {
             if (p.Id == patron.Id)
